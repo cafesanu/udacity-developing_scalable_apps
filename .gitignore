@@ -1,9 +1,65 @@
+syntax: glob
+
+*.pyc
+.DS_Store
+nbproject
+auth.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 
 #yaml files
 *.yaml
+
+# Eclipse
+.classpath
+.project
+.settings/
+RemoteSystemsTempFiles/
+
+# Intellij
+.idea/
+*.iml
+*.iws
+
+# Mac
+.DS_Store
+
+# Maven
+log/
+target/
+
+*.pydevproject
+.metadata
+.gradle
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# CDT-specific
+.cproject
+
+# PDT-specific
+.buildpath
+
+# sbteclipse plugin 
+.target
+
+# TeXlipse plugin
+.texlipse
 
 #temp files
 *.*~
