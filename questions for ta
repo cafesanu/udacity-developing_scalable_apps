@@ -1,0 +1,14 @@
+On conferenceApi.java::getConference{
+    Why is that we do:
+        Conference conference = ofy().load().key(conferenceKey).now();
+    instead of:
+        Conference conference = ofy().load().key(Conference.class, conferenceKey).now();
+        
+On conferenceApi.java::registerFosrConference{
+    Why is that we do:
+        else if{conference.getSeatsAvailable() <= 0)
+    instead of:
+        else if{conference.getSeatsAvailable() == 0)
+}
+
+How do I use /crons/set_announcement in localhost (set myselft as developer)... in 4-9 seys to use localhost:8080/crons/set_announcement
