@@ -26,7 +26,7 @@ import java.util.List;
 @Cache
 public class Conference {
 
-    private static final String DEFAULT_CITY = "Default City";
+    private static final String       DEFAULT_CITY   = "Default City";
 
     private static final List<String> DEFAULT_TOPICS = ImmutableList.of("Default", "Topic");
 
@@ -36,52 +36,53 @@ public class Conference {
      * We use automatic id assignment for entities of Conference class.
      */
     @Id
-    private long id;
+    private long                      id;
 
     /**
      * The name of the conference.
      */
     @Index
-    private String name;
+    private String                    name;
 
     /**
      * The description of the conference.
      */
-    private String description;
+    private String                    description;
 
     /**
      * Holds Profile key as the parent.
      */
     @Parent
     @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
-    private Key<Profile> profileKey;
+    private Key<Profile>              profileKey;
 
     /**
      * The userId of the organizer.
      */
     @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
-    private String organizerUserId;
+    private String                    organizerUserId;
 
     /**
      * Topics related to this conference.
      */
     @Index
-    private List<String> topics;
+    private List<String>              topics;
 
     /**
      * The name of the city that the conference takes place.
      */
-    @Index(IfNotDefault.class) private String city = "Default City";
+    @Index(IfNotDefault.class)
+    private String                    city           = "Default City";
 
     /**
      * The starting date of this conference.
      */
-    private Date startDate;
+    private Date                      startDate;
 
     /**
      * The ending date of this conference.
      */
-    private Date endDate;
+    private Date                      endDate;
 
     /**
      * Indicating the starting month derived from startDate.
@@ -89,28 +90,28 @@ public class Conference {
      * We need this for a composite query specifying the starting month.
      */
     @Index
-    private int month;
+    private int                       month;
 
     /**
      * The maximum capacity of this conference.
      */
     @Index
-    private int maxAttendees;
+    private int                       maxAttendees;
 
     /**
      * Number of seats currently available.
      */
     @Index
-    private int seatsAvailable;
+    private int                       seatsAvailable;
 
     /**
      * Just making the default constructor private.
      */
     @SuppressWarnings("unused")
-    private Conference() {}
+    private Conference() {
+    }
 
-    public Conference(final long id, final String organizerUserId,
-                      final ConferenceForm conferenceForm) {
+    public Conference(final long id, final String organizerUserId, final ConferenceForm conferenceForm) {
         Preconditions.checkNotNull(conferenceForm.getName(), "The name is required");
         this.id = id;
         this.profileKey = Key.create(Profile.class, organizerUserId);
@@ -148,20 +149,24 @@ public class Conference {
     /**
      * Returns organizer's display name.
      *
-     * @return organizer's display name. If there is no Profile, return his/her userId.
+     * @return organizer's display name. If there is no Profile, return his/her
+     *         userId.
      */
     public String getOrganizerDisplayName() {
-        // Profile organizer = ofy().load().key(Key.create(Profile.class, organizerUserId)).now();
+        // Profile organizer = ofy().load().key(Key.create(Profile.class,
+        // organizerUserId)).now();
         Profile organizer = ofy().load().key(getProfileKey()).now();
         if (organizer == null) {
             return organizerUserId;
-        } else {
+        }
+        else {
             return organizer.getDisplayName();
         }
     }
 
     /**
      * Returns a defensive copy of topics if not null.
+     * 
      * @return a defensive copy of topics if not null.
      */
     public List<String> getTopics() {
@@ -174,6 +179,7 @@ public class Conference {
 
     /**
      * Returns a defensive copy of startDate if not null.
+     * 
      * @return a defensive copy of startDate if not null.
      */
     public Date getStartDate() {
@@ -182,6 +188,7 @@ public class Conference {
 
     /**
      * Returns a defensive copy of endDate if not null.
+     * 
      * @return a defensive copy of endDate if not null.
      */
     public Date getEndDate() {
@@ -201,10 +208,11 @@ public class Conference {
     }
 
     /**
-     * Updates the Conference with ConferenceForm.
-     * This method is used upon object creation as well as updating existing Conferences.
+     * Updates the Conference with ConferenceForm. This method is used upon
+     * object creation as well as updating existing Conferences.
      *
-     * @param conferenceForm contains form data sent from the client.
+     * @param conferenceForm
+     *            contains form data sent from the client.
      */
     public void updateWithConferenceForm(ConferenceForm conferenceForm) {
         this.name = conferenceForm.getName();
@@ -224,14 +232,16 @@ public class Conference {
             // Calendar.MONTH is zero based, so adding 1.
             this.month = calendar.get(Calendar.MONTH) + 1;
         }
-        // Check maxAttendees value against the number of already allocated seats.
+        // Check maxAttendees value against the number of already allocated
+        // seats.
         int seatsAllocated = maxAttendees - seatsAvailable;
         if (conferenceForm.getMaxAttendees() < seatsAllocated) {
-            throw new IllegalArgumentException(seatsAllocated + " seats are already allocated, "
-                    + "but you tried to set maxAttendees to " + conferenceForm.getMaxAttendees());
+            throw new IllegalArgumentException(seatsAllocated + " seats are already allocated, " + "but you tried to set maxAttendees to "
+                            + conferenceForm.getMaxAttendees());
         }
         // The initial number of seatsAvailable is the same as maxAttendees.
-        // However, if there are already some seats allocated, we should subtract that numbers.
+        // However, if there are already some seats allocated, we should
+        // subtract that numbers.
         this.maxAttendees = conferenceForm.getMaxAttendees();
         this.seatsAvailable = this.maxAttendees - seatsAllocated;
     }
@@ -252,8 +262,7 @@ public class Conference {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder("Id: " + id + "\n")
-                .append("Name: ").append(name).append("\n");
+        StringBuilder stringBuilder = new StringBuilder("Id: " + id + "\n").append("Name: ").append(name).append("\n");
         if (city != null) {
             stringBuilder.append("City: ").append(city).append("\n");
         }
