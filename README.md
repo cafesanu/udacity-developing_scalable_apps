@@ -4,6 +4,8 @@ Final project involved creating a Conference application where users login with 
 
 Most important concept used is GAE Endpoints, along with GAE Datastore, Memcache, and task queues to send automatic emails are used.
     
--Website: http://cafesanu-gae.appspot.com/
+- Project Website: [http://cafesanu-gae.appspot.com/][1]
+
+[1]: http://cafesanu-gae.appspot.com/
 
 
