@@ -18,8 +18,17 @@ import java.util.logging.Logger;
  */
 public class ConferenceQueryForm {
 
-    private static final Logger    LOG    = Logger.getLogger(ConferenceQueryForm.class.getName());
+    /* **********************************************************************
+     * CONSTANTS
+     * **********************************************************************
+     */
+    private static final Logger LOG = Logger.getLogger(ConferenceQueryForm.class.getName());
 
+    /* **********************************************************************
+     * ENUMS
+     * **********************************************************************
+     */
+    
     /**
      * Enum representing a field type.
      */
@@ -33,9 +42,9 @@ public class ConferenceQueryForm {
     public static enum Field {
         CITY("city", FieldType.STRING), TOPIC("topics", FieldType.STRING), MONTH("month", FieldType.INTEGER), MAX_ATTENDEES("maxAttendees", FieldType.INTEGER);
 
-        private String        fieldName;
+        private String    fieldName;
 
-        private FieldType    fieldType;
+        private FieldType fieldType;
 
         private Field(String fieldName, FieldType fieldType) {
             this.fieldName = fieldName;
@@ -53,7 +62,7 @@ public class ConferenceQueryForm {
     public static enum Operator {
         EQ("=="), LT("<"), GT(">"), LTEQ("<="), GTEQ(">="), NE("!=");
 
-        private String    queryOperator;
+        private String queryOperator;
 
         private Operator(String queryOperator) {
             this.queryOperator = queryOperator;
@@ -66,15 +75,18 @@ public class ConferenceQueryForm {
         private boolean isInequalityFilter() {
             return this.queryOperator.contains("<") || this.queryOperator.contains(">") || this.queryOperator.contains("!");
         }
-    }
-
+    }    
+    /* **********************************************************************
+     * INNER CLASSES
+     * **********************************************************************
+     */
     /**
      * A class representing a single filter for the query.
      */
     public static class Filter {
-        private Field        field;
-        private Operator    operator;
-        private String        value;
+        private Field    field;
+        private Operator operator;
+        private String   value;
 
         public Filter() {
         }
@@ -98,21 +110,55 @@ public class ConferenceQueryForm {
         }
     }
 
+    /* **********************************************************************
+     * ATTRIBUTES
+     * **********************************************************************
+     */
+    
     /**
      * A list of query filters.
      */
-    private List<Filter>    filters    = new ArrayList<>(0);
+    private List<Filter> filters = new ArrayList<>(0);
 
     /**
      * Holds the first inequalityFilter for checking the feasibility of the
      * whole query.
      */
     @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
-    private Filter            inequalityFilter;
+    private Filter       inequalityFilter;
 
+    /* **********************************************************************
+     * CONSTRUCTORS
+     * **********************************************************************
+     */
+    
     public ConferenceQueryForm() {
     }
-
+    
+    /* **********************************************************************
+     * OVERRIDES
+     * **********************************************************************
+     */
+    
+    /* **********************************************************************
+     * SETTERS AND GETTERS FOR ATTRIBUTES
+     * **********************************************************************
+     */
+    
+    /**
+     * Getter for filters.
+     *
+     * @return The List of filters.
+     */
+    public List<Filter> getFilters() {
+        return ImmutableList.copyOf(filters);
+    }
+    
+    /* **********************************************************************
+     * PRIVATE METHODS
+     * **********************************************************************
+     */
+    
     /**
      * Checks the feasibility of the whole query.
      */
@@ -127,16 +173,11 @@ public class ConferenceQueryForm {
             }
         }
     }
-
-    /**
-     * Getter for filters.
     
-     *
-     * @return The List of filters.
-     */
-    public List<Filter> getFilters() {
-        return ImmutableList.copyOf(filters);
-    }
+    /* **********************************************************************
+     * PUBLIC METHODS
+     * **********************************************************************
+     */     
 
     /**
      * Adds a query filter.

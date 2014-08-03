@@ -8,11 +8,13 @@ import com.google.appengine.api.users.User;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.devrel.training.conference.domain.Conference;
+import com.google.devrel.training.conference.domain.Session;
 // import com.google.devrel.training.conference.domain.Conference;
 import com.google.devrel.training.conference.domain.Profile;
 import com.google.devrel.training.conference.form.ConferenceForm;
 // import com.google.devrel.training.conference.form.ConferenceForm;
 import com.google.devrel.training.conference.form.ProfileForm;
+import com.google.devrel.training.conference.form.SessionForm;
 import com.google.devrel.training.conference.form.ProfileForm.TeeShirtSize;
 import com.googlecode.objectify.Key;
 
@@ -48,6 +50,20 @@ public class ConferenceApiTest {
     private static final int MONTH = 3;
 
     private static final int CAP = 500;
+    
+    private static final int SESSION_DURATION = 120;
+
+    private static final String SESSION_HIGHLIGHTS = "This is a great session!";
+
+    private static final long SESSION_ID = 456789L;
+
+    private static final String SESSION_NAME = "Session 1";
+
+    private static final String SESSION_SPEAKER = "Carlos Sanchez";
+
+    private static final String SESSION_TIME = "12:30";
+
+    private static final String SESSION_TYPE = "workshop";
 
     private User user;
 
@@ -169,8 +185,6 @@ public class ConferenceApiTest {
         assertEquals(TEE_SHIRT_SIZE, profile.getTeeShirtSize());
         assertEquals(DISPLAY_NAME, profile.getDisplayName());
     }
-
-
     
     @Test
     public void testCreateConference() throws Exception {
@@ -224,9 +238,7 @@ public class ConferenceApiTest {
         assertTrue("The result should contain a conference",
                 conferencesCreated.contains(conference));
     }
-    
 
-    
     @Test
     public void testGetConference() throws Exception {
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -252,8 +264,6 @@ public class ConferenceApiTest {
         assertEquals(CAP, conference.getSeatsAvailable());
         assertEquals(MONTH, conference.getMonth());
     }
-    
-
     
     @Test
     public void testRegistrations() throws Exception {
@@ -290,4 +300,54 @@ public class ConferenceApiTest {
                 profile.getConferenceKeysToAttend().contains(conference.getWebsafeKey()));
     }
     
+
+    @Test
+    public void testCreateSession() throws Exception {
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        Date sessionDate = dateFormat.parse("03/25/2014");
+        Date startDate = dateFormat.parse("03/25/2014");
+        Date endDate = dateFormat.parse("03/26/2014");
+        List<String> topics = new ArrayList<>();
+        topics.add("Google");
+        topics.add("Cloud");
+        topics.add("Platform");
+        ConferenceForm conferenceForm = new ConferenceForm(
+                NAME, DESCRIPTION, topics, CITY, startDate, endDate, CAP);
+        
+        SessionForm sessionForm = new SessionForm(sessionDate, SESSION_DURATION, SESSION_HIGHLIGHTS, SESSION_NAME, SESSION_SPEAKER,SESSION_TIME, SESSION_TYPE);
+        Conference conference = conferenceApi.createConference(user, conferenceForm);
+        Session session = conferenceApi.createSession(user, sessionForm, conference.getWebsafeKey());
+        // Check the return value.
+        assertEquals(SESSION_DURATION, session.getDuration());
+        assertEquals(SESSION_HIGHLIGHTS, session.getHighlights());
+        assertEquals(SESSION_NAME, session.getName());
+        assertEquals(SESSION_SPEAKER, session.getSpeaker());
+        assertEquals(SESSION_TIME, session.getTime());
+        assertEquals(SESSION_TYPE, session.getType());
+        assertEquals(sessionDate, session.getDate());
+    }
+    
+
+    @Test
+    public void testGetConferenceSessions() throws Exception {
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        Date sessionDate = dateFormat.parse("03/25/2014");
+        Date startDate = dateFormat.parse("03/25/2014");
+        Date endDate = dateFormat.parse("03/26/2014");
+        List<String> topics = new ArrayList<>();
+        topics.add("Google");
+        topics.add("Cloud");
+        topics.add("Platform");
+        ConferenceForm conferenceForm = new ConferenceForm(
+                NAME, DESCRIPTION, topics, CITY, startDate, endDate, CAP);
+        
+        SessionForm sessionForm = new SessionForm(sessionDate, SESSION_DURATION, SESSION_HIGHLIGHTS, SESSION_NAME, SESSION_SPEAKER,SESSION_TIME, SESSION_TYPE);
+        Conference conference = conferenceApi.createConference(user, conferenceForm);
+        Session session = conferenceApi.createSession(user, sessionForm, conference.getWebsafeKey());
+
+        List<Session> sessionsCreated = conferenceApi.getConferenceSessions(conference.getWebsafeKey());
+        assertEquals(1, sessionsCreated.size());
+        assertTrue("The result should contain a conference",
+                        sessionsCreated.contains(session));
+    }
 }

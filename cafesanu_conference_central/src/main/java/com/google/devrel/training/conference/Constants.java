@@ -14,6 +14,7 @@ public class Constants {
     public static final String API_EXPLORER_CLIENT_ID = Constant.API_EXPLORER_CLIENT_ID;
 
     public static final String MEMCACHE_ANNOUNCEMENTS_KEY = "RECENT_ANNOUNCEMENTS";
+    public static final String MEMCACHE_FEATURED_SPEAKER_KEY = "FEATURED_SPEAKER";
     
     //email Types
     public static final String NEW_CONFERENCE = "newConference";

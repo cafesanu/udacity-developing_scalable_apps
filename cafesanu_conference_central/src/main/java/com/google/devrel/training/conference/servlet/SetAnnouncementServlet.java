@@ -27,9 +27,12 @@ import static com.google.devrel.training.conference.service.OfyService.ofy;
 public class SetAnnouncementServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+                    throws ServletException, IOException {
         // Query for conferences with less than 5 seats left
-        Iterable<Conference> conferences = ofy().load().type(Conference.class).filter("seatsAvailable <", 6).filter("seatsAvailable >", 0);
+        Iterable<Conference> conferences = ofy().load().type(Conference.class)
+                                            .filter("seatsAvailable <", 6)
+                                            .filter("seatsAvailable >", 0);
 
         // Get the names of the nearly sold out conferences
         List<String> conferenceNames = new ArrayList<>(0);
@@ -38,26 +41,27 @@ public class SetAnnouncementServlet extends HttpServlet {
         }
 
         if (conferenceNames.size() > 0) {
-            StringBuilder announcementStringBuilder = new StringBuilder("Oh look! Last chance to attend! The following conferences are nearly sold out: ");
-            
+            StringBuilder announcementStringBuilder 
+                    = new StringBuilder("Oh look! Last chance to attend! The following conferences are nearly sold out: ");
+
             Joiner joiner = Joiner.on(", ").skipNulls();
             announcementStringBuilder.append(joiner.join(conferenceNames));
-            
-            //Get the MemCache Service
+
+            // Get the MemCache Service
             MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();
-            
-            //Put the announcement String in memcache,
-            //keyed by Constants.MEMCACHE_ANNOUNCEMENTS_KEY
+
+            // Put the announcement String in memcache,
+            // keyed by Constants.MEMCACHE_ANNOUNCEMENTS_KEY
             String announcementKey = Constants.MEMCACHE_ANNOUNCEMENTS_KEY;
             String announcementText = announcementStringBuilder.toString();
-            
+
             memcacheService.put(announcementKey, announcementText);
-            
+
         }
-        
-        //Set the response status to 204, which means
-        //the request was successful but there's no data to send back
-        //Browser stays on the same page if the get came from the browser
+
+        // Set the response status to 204, which means
+        // the request was successful but there's no data to send back
+        // Browser stays on the same page if the get came from the browser
         response.setStatus(204);
     }
 

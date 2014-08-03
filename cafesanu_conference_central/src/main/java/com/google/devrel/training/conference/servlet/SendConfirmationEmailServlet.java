@@ -22,48 +22,45 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * A servlet for sending a notification e-mail.
  */
+@SuppressWarnings("serial")
 public class SendConfirmationEmailServlet extends HttpServlet {
 
-    private static final Logger LOG = Logger.getLogger(
-            SendConfirmationEmailServlet.class.getName());
+    private static final Logger LOG = Logger.getLogger(SendConfirmationEmailServlet.class.getName());
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+                    throws ServletException, IOException {
         String emailType = request.getParameter("emailType");
         String emailInfo = "";
         String subject = "";
-        if(emailType.equals(Constants.NEW_CONFERENCE))
-        {    
+        String body = "";
+        
+        if (emailType.equals(Constants.NEW_CONFERENCE)) {
             emailInfo = request.getParameter("conferenceInfo");
             subject = "You created a new Conference!";
+            body = "Hi, you have created a following conference.\n" + emailInfo;
         }
-        else if(emailType.equals(Constants.NEW_SESSION))
-        { 
+        else if (emailType.equals(Constants.NEW_SESSION)) {
             emailInfo = request.getParameter("sessionInfo");
             subject = "You created a new Session!";
-            
+            body = "Hi, you have created a following session.\n" + emailInfo;
+
         }
 
         String email = request.getParameter("email");
-        
+
         Properties props = new Properties();
         Session session = Session.getDefaultInstance(props, null);
-        String body = "Hi, you have created a following conference.\n" + emailInfo;
         try {
             Message message = new MimeMessage(session);
-            InternetAddress from = new InternetAddress(
-                                            String.format(
-                                                "noreply@%s.appspotmail.com",
-                                                SystemProperty.applicationId.get()
-                                            ), "Conference Central"
-                                       );
+            InternetAddress from = new InternetAddress(String.format("noreply@%s.appspotmail.com", SystemProperty.applicationId.get()), "Conference Central");
             message.setFrom(from);
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(email, ""));
             message.setSubject(subject);
             message.setText(body);
             Transport.send(message);
-        } catch (MessagingException e) {
+        }
+        catch (MessagingException e) {
             LOG.log(Level.WARNING, String.format("Failed to send an mail to %s", email), e);
             throw new RuntimeException(e);
         }

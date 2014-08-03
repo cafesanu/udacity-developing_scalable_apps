@@ -1,0 +1,25 @@
+Design choices:
+
+Sessions are very similar to conferences, I did not change much other that actually storing the conference key as the parent of each session, the reason is that I read an example on the GAE documentation where it was done this way, as opposite of storing the id (like the way it was done during the video lectures). I defined speaker as a simple String, I could not find a reason of creating a kind for a speaker given that it would only have one attribute (name), and it wouldn't make sense having another entity as its ancestor or child.
+
+
+The indexes I created are: name, speaker, and type, and time given that those are the ones field I added in the queries. 
+
+Extra stuff I added not required :
+	+API method: getConferenceSessionsQueryForm. I added a SessionQueryForm similar to ConferenceQueryForm that can query almost anything that is indexed (name, speaker, and type, and time for now, but I could add more indexes).
+	+When creating a session, I added sending an email with the session info as well.
+	+API method: deleteSessionFromWhishlist: Deleted a session from wishlist.
+
+Let’s say that you don't like workshops and you don't like sessions after 7 pm. How would you handle a query for all non-workshop sessions before 7 pm? What is the problem for implementing this query? What ways to solve it did you think of?
+
+The problem of this query is that is has two inequalities for two different indexes("!=" for sessionType, and "<" for time). I actually implemented this query and can be found in the api as getSessionsBeforeTimeOtherThanType. This query queries by time less that and specific time (in format hh:mm), and then traverses the result looking for sessions which type is different that the type passed, when it finds a session with this requisite, it adds it to a result lsit that will be returned at the end.
+
+
+Come up with 2 additional queries:
+	+API method: getConferenceSessionsQueryForm. I added a SessionQueryForm similar to ConferenceQueryForm that can query almost anything that is indexed (name, speaker, and type, and time for now, but I could add more indexes).
+	+getSessionsByDate. Searches by date. When creating a session via API, date needs to be input like "2014-07-21T00:00:00.000Z", same for using this query: please enter date the same way you entered it when creating session
+	+getSessionsByTimeRange. If user want's to see if there are session within a time frame
+	+
+	+
+
+

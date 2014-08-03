@@ -9,25 +9,45 @@ import java.util.List;
  * A simple Java object (POJO) representing a Conference form sent from the client.
  */
 public class ConferenceForm {
-    /**
-     * The name of the conference.
+
+    /* **********************************************************************
+     * CONSTANTS
+     * **********************************************************************
      */
-    private String name;
+    
+    /* **********************************************************************
+     * ENUMS
+     * **********************************************************************
+     */
+     
+    /* **********************************************************************
+     * ATTRIBUTES
+     * **********************************************************************
+     */
+    /**
+     * The city where the conference will take place.
+     */
+    private String city;
 
     /**
      * The description of the conference.
      */
     private String description;
-
+    
     /**
-     * Topics that are discussed in this conference.
+     * The end date of the conference.
      */
-    private List<String> topics;
-
+    private Date endDate;
+    
     /**
-     * The city where the conference will take place.
+     * The capacity of the conference.
      */
-    private String city;
+    private int maxAttendees;
+    
+    /**
+     * The name of the conference.
+     */
+    private String name;
 
     /**
      * The start date of the conference.
@@ -35,15 +55,16 @@ public class ConferenceForm {
     private Date startDate;
 
     /**
-     * The end date of the conference.
+     * Topics that are discussed in this conference.
      */
-    private Date endDate;
+    private List<String> topics;
 
-    /**
-     * The capacity of the conference.
+    /* **********************************************************************
+     * CONSTRUCTORS
+     * **********************************************************************
      */
-    private int maxAttendees;
 
+    @SuppressWarnings("unused")
     private ConferenceForm() {}
 
     /**
@@ -66,32 +87,87 @@ public class ConferenceForm {
         this.endDate = endDate == null ? null : new Date(endDate.getTime());
         this.maxAttendees = maxAttendees;
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public List<String> getTopics() {
-        return topics;
-    }
-
+    
+    /* **********************************************************************
+    * SETTERS AND GETTERS FOR ATTRIBUTES
+    * **********************************************************************
+    */
+    
+    /**
+     * Getter for city.
+     * 
+     * @return city.
+     */
     public String getCity() {
         return city;
     }
-
-    public Date getStartDate() {
-        return startDate;
-    }
-
+    
+    /**
+     * Getter for endDate.
+     * 
+     * @return endDate.
+     */
     public Date getEndDate() {
         return endDate;
     }
 
+    
+    /**
+     * Getter for maxAttendees.
+     * 
+     * @return maxAttendees.
+     */
     public int getMaxAttendees() {
         return maxAttendees;
     }
+
+    
+    /**
+     * Getter for startDate.
+     * 
+     * @return startDate.
+     */
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    
+    /**
+     * Getter for description.
+     * 
+     * @return description.
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    
+    /**
+     * Getter for name.
+     * 
+     * @return name.
+     */
+    public String getName() {
+        return name;
+    }
+
+    
+    /**
+     * Getter for topics.
+     * 
+     * @return topics.
+     */
+    public List<String> getTopics() {
+        return topics;
+    }
+    
+    /* **********************************************************************
+     * PRIVATE METHODS
+     * **********************************************************************
+     */
+    
+    /* **********************************************************************
+     * PUBLIC METHODS
+     * **********************************************************************
+     */ 
 }

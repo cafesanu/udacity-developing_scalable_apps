@@ -19,10 +19,18 @@ import java.util.logging.Logger;
  */
 public class SessionQueryForm {
 
+    /* **********************************************************************
+     * CONSTANTS
+     * **********************************************************************
+     */
     private static final Logger LOG = Logger.getLogger(ConferenceQueryForm.class.getName());
 
+    /* **********************************************************************
+     * ENUMS
+     * **********************************************************************
+     */ 
     /**
-     * Enum representing a field type.
+     * Enum representing a field type. For now it's only a string but for extensibility I leave it here
      */
     public static enum FieldType {
         STRING
@@ -34,7 +42,8 @@ public class SessionQueryForm {
     public static enum Field {
         CONFERENCE_KEY("conferenceKey", FieldType.STRING), 
         TYPE("type", FieldType.STRING), 
-        SPEAKER("speaker", FieldType.STRING);
+        SPEAKER("speaker", FieldType.STRING),
+        TIME("time", FieldType.STRING);
 
         private String    fieldName;
 
@@ -71,6 +80,10 @@ public class SessionQueryForm {
         }
     }
 
+    /* **********************************************************************
+     * INNER CLASSES
+     * **********************************************************************
+     */
     /**
      * A class representing a single filter for the query.
      */
@@ -119,6 +132,11 @@ public class SessionQueryForm {
             return ob.getField().equals(Field.CONFERENCE_KEY);
         }
     }
+    
+    /* **********************************************************************
+     * ATTRIBUTES
+     * **********************************************************************
+     */
 
     /**
      * A list of query filters.
@@ -132,9 +150,38 @@ public class SessionQueryForm {
     @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
     private Filter       inequalityFilter;
 
+    /* **********************************************************************
+     * CONSTRUCTORS
+     * **********************************************************************
+     */
     public SessionQueryForm() {
     }
 
+    /* **********************************************************************
+     * OVERRIDES
+     * **********************************************************************
+     */
+    
+    /* **********************************************************************
+     * SETTERS AND GETTERS FOR ATTRIBUTES
+     * **********************************************************************
+     */
+
+    /**
+     * Getter for filters.
+     * 
+     *
+     * @return The List of filters.
+     */
+    public List<Filter> getFilters() {
+        return ImmutableList.copyOf(filters);
+    }
+
+    /* **********************************************************************
+     * PRIVATE METHODS
+     * **********************************************************************
+     */
+    
     /**
      * Checks the feasibility of the whole query.
      */
@@ -149,16 +196,11 @@ public class SessionQueryForm {
             }
         }
     }
-
-    /**
-     * Getter for filters.
-     * 
-     *
-     * @return The List of filters.
-     */
-    public List<Filter> getFilters() {
-        return ImmutableList.copyOf(filters);
-    }
+    
+    /* **********************************************************************
+     * PUBLIC METHODS
+     * **********************************************************************
+     */  
 
     /**
      * Adds a query filter.
@@ -189,13 +231,9 @@ public class SessionQueryForm {
         // First check the feasibility of inequality filters.
         this.checkFilters();
 
-        //
-        // Query<Session> query =
-        // ofy().load().type(Session.class).ancestor(conferenceKey);
-
         Query<Session> query = ofy().load().type(Session.class);
 
-        // If conference key was passed, deleter from list of filters and get
+        // If conference key was passed, delete it from list of filters and get
         // sessions which ancestor is the conference key
         int conferenceKeyIndex = this.filters.indexOf(new Filter(Field.CONFERENCE_KEY, Operator.EQ, ""));
         if (conferenceKeyIndex >= 0) {
@@ -213,7 +251,6 @@ public class SessionQueryForm {
             query = query.order(inequalityFilter.field.getFieldName());
             query = query.order("name");
         }
-        //query = query.filter("speaker =", "Don");
         
         for (Filter filter : this.filters) {
             // Applies filters in order.
@@ -223,8 +260,6 @@ public class SessionQueryForm {
                 query = query.filter(String.format("%s %s", filter.field.getFieldName(), filter.operator.getQueryOperator()), filter.value);
             }
         }
-        //System.out.println("XXXXXXXXXXXXXXXXXXXXXXX\n"+query.toString());
-        //System.out.println("YYYYYYYYYYYYYYYYYYYYYYYYYYY");
         LOG.info(query.toString());
         return query;
     }
